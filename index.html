@@ -24,9 +24,9 @@
       position:absolute;
       bottom:20px;
       left:50%;
-      transform: translateX(150%); /* začne zunaj desne strani */
-      width:200px;
-      height:200px;
+      transform: translateX(150%);
+      width:300px;
+      height:300px;
       pointer-events:auto;
       z-index:100;
     }
@@ -36,18 +36,33 @@
     }
     .nut{
       position:absolute;
-      width:30px; height:30px;
+      width:45px; height:45px;
       background:#a0522d;
       border-radius:50%;
       top:70%;
       left:50%;
       transform:translateX(0) translateY(0) scale(1) rotate(0deg);
-      transition: transform 1.5s ease-in; /* počasnejši met lešnika */
+      transition: transform 1.5s ease-in;
+      z-index:101;
+    }
+    .warning{
+      position:absolute;
+      top:40%;
+      left:50%;
+      transform: translateX(-50%);
+      font-size:24px;
+      color:red;
+      font-weight:bold;
+      text-align:center;
+      display:none;
+      z-index:200;
     }
 
     @media (max-width:520px){ 
       .card{padding:16px;} 
-      .squirrel-wrap{width:150px; height:150px; bottom:10px;} 
+      .squirrel-wrap{width:200px; height:200px; bottom:10px;} 
+      .nut{width:35px; height:35px;}
+      .warning{font-size:18px;}
     }
   </style>
 </head>
@@ -72,15 +87,15 @@
       <div class="squirrel" id="squirrel">
         <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <g>
-            <!-- rep -->
-            <path d="M150 50 C180 10, 210 90, 150 140 C170 130, 130 170, 100 150 C70 130, 90 80, 120 60 C130 58,140 56,150 50" fill="#f4a261" stroke="#e76f51" stroke-width="2"/>
+            <!-- rep - samo en -->
+            <path d="M150 50 C180 10, 210 90, 150 140 C170 130, 130 170, 100 150" fill="#f4a261" stroke="#e76f51" stroke-width="2"/>
             <!-- telo -->
-            <ellipse cx="80" cy="90" rx="38" ry="42" fill="#f1a261" stroke="#d16a3f" stroke-width="2"/>
+            <ellipse cx="80" cy="90" rx="50" ry="55" fill="#f1a261" stroke="#d16a3f" stroke-width="2"/>
             <!-- glava -->
-            <circle cx="120" cy="70" r="20" fill="#f1a261" stroke="#d16a3f" stroke-width="2"/>
+            <circle cx="120" cy="70" r="25" fill="#f1a261" stroke="#d16a3f" stroke-width="2"/>
             <!-- oči -->
-            <circle cx="114" cy="66" r="5" fill="#111"/>
-            <circle cx="126" cy="66" r="5" fill="#111"/>
+            <circle cx="114" cy="66" r="6" fill="#111"/>
+            <circle cx="126" cy="66" r="6" fill="#111"/>
             <circle cx="114" cy="66" r="2" fill="#fff"/>
             <circle cx="126" cy="66" r="2" fill="#fff"/>
             <!-- ušesa -->
@@ -95,11 +110,15 @@
         <div class="nut" id="nut"></div>
       </div>
     </div>
+
+    <div class="warning" id="warningText">NI VSE ZLATO KAR SE SVETI</div>
+
   </div>
 
   <script>
     const squirrelWrap = document.getElementById('squirrelWrap');
     const nut = document.getElementById('nut');
+    const warning = document.getElementById('warningText');
     const demoFill = document.getElementById('demoFill');
     const form = document.getElementById('userForm');
     let timer = null;
@@ -107,17 +126,20 @@
     function scheduleSquirrel(delayMs = 10000){
       clearTimeout(timer);
       squirrelWrap.style.transition = 'none';
-      squirrelWrap.style.transform = 'translateX(150%)'; // start zunaj desne strani
+      squirrelWrap.style.transform = 'translateX(150%)';
       nut.style.transition = 'transform 1.5s ease-in';
       nut.style.transform = 'translateX(0) translateY(0) scale(1) rotate(0deg)';
+      warning.style.display = 'none';
 
       timer = setTimeout(()=>{
-        squirrelWrap.style.transition = 'transform 2s cubic-bezier(0.68,-0.55,0.27,1.55)'; // počasnejši skok
-        squirrelWrap.style.transform = 'translateX(-50%)'; // na sredino ekrana
+        squirrelWrap.style.transition = 'transform 2s cubic-bezier(0.68,-0.55,0.27,1.55)';
+        squirrelWrap.style.transform = 'translateX(-50%)';
 
         setTimeout(()=>{
-          nut.style.transition = 'transform 1.5s cubic-bezier(0.68,-0.55,0.27,1.55)'; // počasnejši met
-          nut.style.transform = 'translateY(-120px) scale(2) rotate(1080deg)'; // vrže proti gledalcu
+          nut.style.transition = 'transform 1.5s cubic-bezier(0.68,-0.55,0.27,1.55)';
+          nut.style.transform = 'translateY(-120px) scale(2) rotate(1080deg)';
+          // pokaže rdeč napis
+          warning.style.display = 'block';
         }, 600);
       }, delayMs);
     }

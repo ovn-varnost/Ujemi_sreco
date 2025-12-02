@@ -41,8 +41,8 @@
       border-radius:50%;
       top:70%;
       left:50%;
-      transform:translateX(0) translateY(0) rotate(0deg);
-      transition: transform 0.8s ease-in;
+      transform:translateX(0) translateY(0) scale(1) rotate(0deg);
+      transition: transform 1.5s ease-in; /* počasnejši met lešnika */
     }
 
     @media (max-width:520px){ 
@@ -90,8 +90,6 @@
             <circle cx="120" cy="76" r="3" fill="#2b2b2b"/>
             <!-- usta -->
             <path d="M115 80 Q120 84,125 80" stroke="#2b2b2b" stroke-width="1" fill="none"/>
-            <!-- roke drže list -->
-            <path d="M108 80 C110 70,130 70,132 82 C128 88,112 88,108 80" fill="#4caf50" stroke="#388e3c" stroke-width="1"/>
           </g>
         </svg>
         <div class="nut" id="nut"></div>
@@ -110,14 +108,16 @@
       clearTimeout(timer);
       squirrelWrap.style.transition = 'none';
       squirrelWrap.style.transform = 'translateX(150%)'; // start zunaj desne strani
-      nut.style.transform = 'translateX(0) translateY(0) rotate(0deg)';
+      nut.style.transition = 'transform 1.5s ease-in';
+      nut.style.transform = 'translateX(0) translateY(0) scale(1) rotate(0deg)';
 
       timer = setTimeout(()=>{
-        squirrelWrap.style.transition = 'transform 1s cubic-bezier(0.68,-0.55,0.27,1.55)';
+        squirrelWrap.style.transition = 'transform 2s cubic-bezier(0.68,-0.55,0.27,1.55)'; // počasnejši skok
         squirrelWrap.style.transform = 'translateX(-50%)'; // na sredino ekrana
 
         setTimeout(()=>{
-          nut.style.transform = 'translateY(-60px) translateX(0px) rotate(720deg)'; // vrže naprej
+          nut.style.transition = 'transform 1.5s cubic-bezier(0.68,-0.55,0.27,1.55)'; // počasnejši met
+          nut.style.transform = 'translateY(-120px) scale(2) rotate(1080deg)'; // vrže proti gledalcu
         }, 600);
       }, delayMs);
     }

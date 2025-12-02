@@ -20,11 +20,35 @@
     button.secondary{background:#eef2ff; color:var(--accent)}
 
     /* RISANKASTA VEVERICA */
-    .squirrel-wrap{position:absolute; bottom:20px; right:-220px; width:200px; height:200px; pointer-events:auto; z-index:100}
-    .squirrel{width:100%; height:100%; position:relative; display:flex; align-items:center; justify-content:center; transform:translateX(0); transition:transform 1s cubic-bezier(0.68,-0.55,0.27,1.55);}
-    .nut{position:absolute; width:30px; height:30px; background:#a0522d; border-radius:50%; top:70%; left:0; transform:translateX(0) rotate(0deg); transition:transform 0.8s ease-in;}
+    .squirrel-wrap{
+      position:absolute;
+      bottom:20px;
+      left:50%;
+      transform: translateX(150%); /* začne zunaj desne strani */
+      width:200px;
+      height:200px;
+      pointer-events:auto;
+      z-index:100;
+    }
+    .squirrel{
+      width:100%; height:100%;
+      position:relative; display:flex; align-items:center; justify-content:center;
+    }
+    .nut{
+      position:absolute;
+      width:30px; height:30px;
+      background:#a0522d;
+      border-radius:50%;
+      top:70%;
+      left:50%;
+      transform:translateX(0) translateY(0) rotate(0deg);
+      transition: transform 0.8s ease-in;
+    }
 
-    @media (max-width:520px){ .card{padding:16px;} .squirrel-wrap{width:150px; height:150px; bottom:10px;} }
+    @media (max-width:520px){ 
+      .card{padding:16px;} 
+      .squirrel-wrap{width:150px; height:150px; bottom:10px;} 
+    }
   </style>
 </head>
 <body>
@@ -43,24 +67,30 @@
       </div>
     </form>
 
-    <!-- NOVA RISANKASTA VEVERICA -->
+    <!-- NOVA VEVERICA -->
     <div class="squirrel-wrap" id="squirrelWrap">
       <div class="squirrel" id="squirrel">
         <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <g>
             <!-- rep -->
-            <path d="M150 50 C180 10, 200 80, 150 130 C170 120, 130 160, 100 140 C70 120, 90 70, 120 60 C130 58,140 56,150 50" fill="#d17b3f" stroke="#a75a2a" stroke-width="2"/>
+            <path d="M150 50 C180 10, 210 90, 150 140 C170 130, 130 170, 100 150 C70 130, 90 80, 120 60 C130 58,140 56,150 50" fill="#f4a261" stroke="#e76f51" stroke-width="2"/>
             <!-- telo -->
             <ellipse cx="80" cy="90" rx="38" ry="42" fill="#f1a261" stroke="#d16a3f" stroke-width="2"/>
             <!-- glava -->
             <circle cx="120" cy="70" r="20" fill="#f1a261" stroke="#d16a3f" stroke-width="2"/>
-            <!-- oko -->
-            <circle cx="126" cy="68" r="4" fill="#111"/>
-            <!-- uho -->
+            <!-- oči -->
+            <circle cx="114" cy="66" r="5" fill="#111"/>
+            <circle cx="126" cy="66" r="5" fill="#111"/>
+            <circle cx="114" cy="66" r="2" fill="#fff"/>
+            <circle cx="126" cy="66" r="2" fill="#fff"/>
+            <!-- ušesa -->
             <path d="M100 54 C96 42,112 44,108 56" fill="#f1a261" stroke="#d16a3f" stroke-width="1"/>
+            <path d="M132 54 C128 42,144 44,140 56" fill="#f1a261" stroke="#d16a3f" stroke-width="1"/>
             <!-- nos -->
-            <circle cx="124" cy="76" r="3" fill="#2b2b2b"/>
-            <!-- listek v roki -->
+            <circle cx="120" cy="76" r="3" fill="#2b2b2b"/>
+            <!-- usta -->
+            <path d="M115 80 Q120 84,125 80" stroke="#2b2b2b" stroke-width="1" fill="none"/>
+            <!-- roke drže list -->
             <path d="M108 80 C110 70,130 70,132 82 C128 88,112 88,108 80" fill="#4caf50" stroke="#388e3c" stroke-width="1"/>
           </g>
         </svg>
@@ -79,15 +109,15 @@
     function scheduleSquirrel(delayMs = 10000){
       clearTimeout(timer);
       squirrelWrap.style.transition = 'none';
-      squirrelWrap.style.right = '-220px';
-      nut.style.transform = 'translateX(0) rotate(0deg)';
+      squirrelWrap.style.transform = 'translateX(150%)'; // start zunaj desne strani
+      nut.style.transform = 'translateX(0) translateY(0) rotate(0deg)';
 
       timer = setTimeout(()=>{
-        squirrelWrap.style.transition = 'right 1s cubic-bezier(0.68,-0.55,0.27,1.55)';
-        squirrelWrap.style.right = '20px';
+        squirrelWrap.style.transition = 'transform 1s cubic-bezier(0.68,-0.55,0.27,1.55)';
+        squirrelWrap.style.transform = 'translateX(-50%)'; // na sredino ekrana
+
         setTimeout(()=>{
-          // vrže lešnik proti gledalcu
-          nut.style.transform = 'translateX(180px) rotate(720deg)';
+          nut.style.transform = 'translateY(-60px) translateX(0px) rotate(720deg)'; // vrže naprej
         }, 600);
       }, delayMs);
     }
@@ -118,7 +148,6 @@
       }
       scheduleSquirrel(10000);
     });
-
   </script>
 </body>
 </html>

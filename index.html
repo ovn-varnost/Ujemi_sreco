@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="sl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Obrazec — hudomušna veverica</title>
+  <style>
+    :root{ --bg:#f7f9fc; --card:#ffffff; --accent:#6b46c1; --muted:#6b7280 }
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#eef2ff 0%,var(--bg) 100%); margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px}
+    .card{background:var(--card); width:760px; max-width:96vw; border-radius:12px; box-shadow:0 8px 30px rgba(12,17,43,0.08); padding:28px; position:relative; overflow:hidden}
+    h1{margin:0 0 8px 0; font-size:20px}
+    p.lead{margin:0 0 18px 0; color:var(--muted)}
+
+    form{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    label{display:flex; flex-direction:column; font-size:13px; color:#111827}
+    input{margin-top:6px; padding:10px 12px; border-radius:8px; border:1px solid #e6e9ee; font-size:14px}
+    .full{grid-column:1 / -1}
+    .actions{display:flex; gap:8px; margin-top:12px}
+    button{background:var(--accent); color:white; border:none; padding:10px 14px; border-radius:10px; cursor:pointer}
+    button.secondary{background:#eef2ff; color:var(--accent)}
+
+    /* HUDO-MUSNA VEVERICA */
+    .squirrel-wrap{position:absolute; right:18px; bottom:18px; width:220px; height:220px; pointer-events:auto}
+    .squirrel{width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(20px) scale(0.9); transition:all 700ms cubic-bezier(.2,.9,.2,1);}
+    .squirrel.show{opacity:1; transform:translateY(0) scale(1);}
+
+    /* little bounce + wiggle */
+    .squirrel .body{animation:bounce 1600ms infinite; transform-origin:center bottom}
+    .squirrel .tail{animation:wiggle 900ms infinite ease-in-out; transform-origin:40% 60%}
+
+    @keyframes bounce{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-6px)}
+      100%{transform:translateY(0)}
+    }
+    @keyframes wiggle{
+      0%{transform:rotate(0deg)}
+      50%{transform:rotate(10deg)}
+      100%{transform:rotate(0deg)}
+    }
+
+    /* speech bubble */
+    .speech{position:absolute; left:18px; top:18px; background:#fff9db; padding:10px 12px; border-radius:10px; box-shadow:0 6px 20px rgba(30,30,60,0.06); font-weight:600; color:#7b5200; transform:translateY(-6px) scale(.98); opacity:0; transition:all 400ms ease;}
+    .speech.show{opacity:1; transform:translateY(0) scale(1)}
+
+    /* small close */
+    .close-sq{position:absolute; right:8px; top:8px; background:transparent; border:none; font-size:18px; cursor:pointer}
+
+    @media (max-width:520px){ .squirrel-wrap{width:150px; height:150px} }
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <button class="close-sq" id="resetForm" title="Počisti obrazec">⟲</button>
+    <h1>Vpišite svoje podatke</h1>
+    <p class="lead">Izpolnite obrazec. Po 15 sekundah se pojavi hudomušna veverica — ne recite, da vas nisem opozoril(a) 😉</p>
+
+    <form id="userForm" autocomplete="on">
+      <label>IME
+        <input id="ime" name="ime" type="text" required placeholder="Janez">
+      </label>
+
+      <label>PRIIMEK
+        <input id="priimek" name="priimek" type="text" required placeholder="Novak">
+      </label>
+
+      <label class="full">NASLOV
+        <input id="naslov" name="naslov" type="text" placeholder="Ulica 1, 1000 Ljubljana">
+      </label>
+
+      <label>TELEFONSKA ŠTEVILKA
+        <input id="telefon" name="telefon" type="tel" pattern="\+?[0-9 \-()]{6,20}" placeholder="+386 40 123 456">
+      </label>
+
+      <label>MAIL
+        <input id="email" name="email" type="email" required placeholder="ime@primer.si">
+      </label>
+
+      <div class="full actions">
+        <button type="submit">Pošlji</button>
+        <button type="button" class="secondary" id="demoFill">Samodejno izpolni (demo)</button>
+      </div>
+    </form>
+
+    <div class="speech" id="speech">Pazi! Hudomušna veverica prihaja...</div>
+
+    <div class="squirrel-wrap" aria-hidden="true">
+      <!-- Inline SVG veverica (po domače) -->
+      <div class="squirrel" id="squirrel">
+        <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g transform="translate(20,10)">
+            <!-- tail -->
+            <path class="tail" d="M140 40 C170 10, 190 70, 140 110 C170 100, 120 150, 90 130 C60 110, 80 60, 110 50 C120 48,130 46,140 40" fill="#b4692a" stroke="#7a4210" stroke-width="2"/>
+            <!-- body -->
+            <ellipse class="body" cx="70" cy="90" rx="38" ry="42" fill="#d98c3a" stroke="#7a4210" stroke-width="2"/>
+            <!-- head -->
+            <circle cx="110" cy="70" r="20" fill="#d98c3a" stroke="#7a4210" stroke-width="2"/>
+            <!-- eye -->
+            <circle cx="116" cy="68" r="3.5" fill="#111"/>
+            <!-- ear -->
+            <path d="M98 54 C94 42,110 44,106 56" fill="#d98c3a" stroke="#7a4210" stroke-width="1"/>
+            <!-- nose -->
+            <circle cx="124" cy="76" r="3" fill="#2b2b2b"/>
+            <!-- cheek -->
+            <ellipse cx="103" cy="78" rx="6" ry="3" fill="#fff7e6" opacity="0.6"/>
+            <!-- little paw -->
+            <ellipse cx="85" cy="110" rx="6" ry="4" fill="#7a4210"/>
+            <ellipse cx="60" cy="115" rx="6" ry="4" fill="#7a4210"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const squirrel = document.getElementById('squirrel');
+    const speech = document.getElementById('speech');
+    const demoFill = document.getElementById('demoFill');
+    const resetForm = document.getElementById('resetForm');
+    const form = document.getElementById('userForm');
+
+    let timer = null;
+    function scheduleSquirrel(delayMs = 15000){
+      clearTimeout(timer);
+      // hide first
+      squirrel.classList.remove('show');
+      speech.classList.remove('show');
+
+      timer = setTimeout(()=>{
+        // show speech then squirrel with a tiny stagger
+        speech.classList.add('show');
+        setTimeout(()=> squirrel.classList.add('show'), 300);
+      }, delayMs);
+    }
+
+    // Start the 15s timer when page loads
+    scheduleSquirrel(15000);
+
+    // Demo button fills sample data and restarts timer
+    demoFill.addEventListener('click', ()=>{
+      document.getElementById('ime').value = 'Miran';
+      document.getElementById('priimek').value = 'Svetlik';
+      document.getElementById('naslov').value = 'Ulica smesnih dreves 7, 1000 Ljubljana';
+      document.getElementById('telefon').value = '+38640123456';
+      document.getElementById('email').value = 'miran@example.com';
+      scheduleSquirrel(15000);
+    });
+
+    // Reset button clears form and hides squirrel
+    resetForm.addEventListener('click', ()=>{
+      form.reset();
+      squirrel.classList.remove('show');
+      speech.classList.remove('show');
+      scheduleSquirrel(15000);
+    });
+
+    // If user interacts with inputs, restart the timer so it doesn't surprise them immediately
+    Array.from(document.querySelectorAll('input')).forEach(inp=>{
+      inp.addEventListener('input', ()=> scheduleSquirrel(15000));
+      inp.addEventListener('focus', ()=> scheduleSquirrel(15000));
+    });
+
+    // Example simple submit handler
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = new FormData(form);
+      const obj = Object.fromEntries(data.entries());
+      // small client-side validation note
+      if(!obj.ime || !obj.priimek || !obj.email){
+        alert('Prosim izpolnite obvezna polja (ime, priimek, mail).');
+        return;
+      }
+      // show a friendly message (in a real app you'd send this to a server)
+      alert('Hvala, vaš obrazec je prejet! — ampak pazite: veverica še pride 😄');
+      scheduleSquirrel(15000);
+    });
+
+    // Accessibility: allow closing the squirrel by clicking it
+    squirrel.addEventListener('click', ()=>{
+      squirrel.classList.remove('show');
+      speech.classList.remove('show');
+    });
+
+    // If user leaves the page or focuses another tab, still show after the same time (no background work possible beyond setTimeout)
+    // scheduleSquirrel already uses setTimeout; browsers may throttle timers in background tabs.
+
+  </script>
+</body>
+</html>
